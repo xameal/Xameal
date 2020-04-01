@@ -1,0 +1,85 @@
+// Ma classe "Filtre", ou j'ai mis les fonctions pour mon image :
+package JAVA2D;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.awt.image.Kernel;
+import java.awt.image.WritableRaster;
+import java.io.IOException;
+import javax.swing.JPanel;
+import javax.imageio.ImageIO;
+import java.awt.image.ConvolveOp;
+
+
+public class Filter extends JPanel{
+	
+	private static final long serialVersionUID = 1L;
+	
+	private BufferedImage picture;
+	
+	Filter() throws IOException {
+		picture = ImageIO.read(getClass().getResourceAsStream("/forest.jpg"));
+	
+		
+	}
+	public void imageConvolue() {
+		
+		BufferedImage imageFlou = new BufferedImage(picture.getWidth(), picture.getHeight(),picture.getType());
+		float[ ] masqueFlou = {
+			0.1f, 0.1f, 0.1f,
+			0.1f, 0.2f, 0.1f,
+			0.1f, 0.1f, 0.1f
+		};
+		Kernel masque = new Kernel(3,3, masqueFlou);
+		ConvolveOp operation = new ConvolveOp(masque);
+		operation.filter(picture, imageFlou);
+		picture = imageFlou;
+		
+		repaint();
+	}
+	@Override
+	public void paint(Graphics g) {
+		g.drawImage(picture, 0, 0,null);
+		repaint();
+	}
+	
+	
+	}
+  
+  ====================================================================================================================================
+  // Ma classe main,ou j'ai afficher mon image à l'aide des fonctions de la classe Filter : 
+  
+ package JAVA2D;
+
+import java.io.IOException;
+import javax.swing.JFrame;
+
+public class Graphics_main extends JFrame {
+	
+	Graphics_main gm;
+	Filter f;
+	
+	public Graphics_main() throws IOException{
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(720, 560);
+		setTitle("Maxence");
+		ShowImage();
+	}
+	
+	public void ShowImage() throws IOException {
+		
+		f = new Filter();
+		add(f);
+		setVisible(true);
+		
+	}
+	
+	public static void main(String[] args) throws IOException {
+		Filter filtre = new Filter();
+		new Graphics_main(); 
+		filtre.imageConvolue();
+		
+	}
+
+}
